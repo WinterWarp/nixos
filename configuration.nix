@@ -47,6 +47,26 @@
     LC_TIME = "en_US.UTF-8";
   };
 
+  i18n.supportedLocales = [
+    "en_US.UTF-8/UTF-8"
+    "ja_JP.UTF-8/UTF-8"
+    "is_IS.UTF-8/UTF-8"
+  ];
+
+  i18n.inputMethod = {
+    enable = true;
+    type = "ibus";
+    ibus.engines = with pkgs.ibus-engines; [
+      mozc
+    ];
+  };
+
+  fonts.packages = with pkgs; [
+    noto-fonts
+    noto-fonts-cjk-sans
+    noto-fonts-color-emoji
+  ];
+
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
@@ -91,7 +111,7 @@
   users.users.r4 = {
     isNormalUser = true;
     description = "Adam Y. Cole II";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "dialout" ];
     shell = pkgs.zsh;
   };
 

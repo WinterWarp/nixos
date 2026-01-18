@@ -20,6 +20,14 @@
     spotify
     nh
     xournalpp
+    godot
+    gimp
+    antigravity
+    claude-code
+    jan
+    flutter
+    nodejs
+    pnpm
   ];
 
   programs = {
@@ -65,6 +73,10 @@
     };
     eza.enable = true;
     bat.enable = true;
+    gh = {
+	enable = true;
+	gitCredentialHelper.enable = true;
+    };
     git = {
       enable = true;
       lfs.enable = true;
