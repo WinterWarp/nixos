@@ -12,6 +12,7 @@
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.configurationLimit = 10;
   boot.loader.efi.canTouchEfiVariables = true;
 
   # Use latest kernel.
@@ -129,6 +130,25 @@
   # Enable Flakes and the new command-line tool
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  # Optimize storage: deduplicate files in /nix/store
+  nix.settings.auto-optimise-store = true;
+
+  # Automatic garbage collection
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
+
+  # Firmware updates for Framework laptop
+  services.fwupd.enable = true;
+
+  # Power management for better battery life
+  services.thermald.enable = true;
+  services.power-profiles-daemon.enable = true;
+
+  # Disable default command-not-found (replaced by nix-index in home.nix)
+  programs.command-not-found.enable = false;
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [

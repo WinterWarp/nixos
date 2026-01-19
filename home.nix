@@ -28,10 +28,20 @@
     flutter
     nodejs
     pnpm
+    devenv
+    comma
   ];
 
   programs = {
     starship.enable = true;
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+    };
+    nix-index = {
+      enable = true;
+      enableZshIntegration = true;
+    };
     zsh = {
       enable = true;
       autosuggestion.enable = true;
@@ -92,18 +102,18 @@
     EDITOR = "nvim";
   };
 
-  systemd.user.services.feblist = {                                                                               
-    Unit = {                                                                                                      
-      Description = "FebList Web App";                                                                            
-      After = [ "network.target" ];                                                                               
-    };                                                                                                            
-    Service = {                                                                                                   
-      Type = "simple";                                                                                            
-      WorkingDirectory = "/home/r4/Documents/FebList";                                                            
-      ExecStart = "${pkgs.nodePackages.serve}/bin/serve dist -l 3000";                                            
-      Restart = "always";                                                                                         
-    };                                                                                                            
-    Install.WantedBy = [ "default.target" ];                                                                      
+  systemd.user.services.feblist = {
+    Unit = {
+      Description = "FebList Web App";
+      After = [ "network.target" ];
+    };
+    Service = {
+      Type = "simple";
+      WorkingDirectory = "${config.home.homeDirectory}/Documents/FebList";
+      ExecStart = "${pkgs.nodePackages.serve}/bin/serve dist -l 3000";
+      Restart = "always";
+    };
+    Install.WantedBy = [ "default.target" ];
   };                                                                                                              
        
 
