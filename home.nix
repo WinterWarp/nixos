@@ -92,5 +92,20 @@
     EDITOR = "nvim";
   };
 
+  systemd.user.services.feblist = {                                                                               
+    Unit = {                                                                                                      
+      Description = "FebList Web App";                                                                            
+      After = [ "network.target" ];                                                                               
+    };                                                                                                            
+    Service = {                                                                                                   
+      Type = "simple";                                                                                            
+      WorkingDirectory = "/home/r4/Documents/FebList";                                                            
+      ExecStart = "${pkgs.nodePackages.serve}/bin/serve dist -l 3000";                                            
+      Restart = "always";                                                                                         
+    };                                                                                                            
+    Install.WantedBy = [ "default.target" ];                                                                      
+  };                                                                                                              
+       
+
   programs.home-manager.enable = true;
 }
