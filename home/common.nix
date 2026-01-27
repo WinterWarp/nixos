@@ -1,7 +1,8 @@
+# Shared home-manager configuration for all machines
 { config, pkgs, ... }:
 
 {
-  imports = [ ./dconf.nix ];
+  imports = [ ../dconf.nix ];
 
   home.username = "r4";
   home.homeDirectory = "/home/r4";
@@ -32,14 +33,6 @@
     audacity
     vlc
   ];
-
-  xdg = {
-    enable = true;
-    userDirs = {
-      enable = true;
-      createDirectories = true;
-    };
-  };
 
   programs = {
     gemini-cli = {
@@ -85,7 +78,6 @@
         mini-nvim
       ];
 
-      # 2. Your Lua Config (exact same logic, just stripped of Lazy.nvim boilerplate)
       initLua = ''
         require("mini.basics").setup()
         require("mini.statusline").setup()
@@ -122,22 +114,16 @@
     };
   };
 
-  home.sessionVariables = {
-    EDITOR = "nvim";
+  xdg = {
+    enable = true;
+    userDirs = {
+      enable = true;
+      createDirectories = true;
+    };
   };
 
-  systemd.user.services.feblist = {
-    Unit = {
-      Description = "FebList Web App";
-      After = [ "network.target" ];
-    };
-    Service = {
-      Type = "simple";
-      WorkingDirectory = "${config.home.homeDirectory}/Documents/FebList";
-      ExecStart = "${pkgs.nodePackages.serve}/bin/serve dist -l 3000";
-      Restart = "always";
-    };
-    Install.WantedBy = [ "default.target" ];
+  home.sessionVariables = {
+    EDITOR = "nvim";
   };
 
   programs.home-manager.enable = true;
