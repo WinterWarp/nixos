@@ -5,10 +5,11 @@
 { config, pkgs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+    ./r4db.nix
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -19,6 +20,9 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   networking.hostName = "fourscore"; # Define your hostname.
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
+
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -86,13 +90,26 @@
     variant = "";
   };
 
+  services.fstrim = {
+    enable = true;
+    interval = "weekly";
+  };
+
   # Enable CUPS to print documents.
   services.printing.enable = true;
-  services.printing.drivers = [ pkgs.epson-escpr pkgs.epson-escpr2 ];
+  services.printing.drivers = [
+    pkgs.epson-escpr
+    pkgs.epson-escpr2
+  ];
   services.avahi = {
-  	enable = true;
-	nssmdns4 = true;
-	openFirewall = true;
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
+
+  services.r4dronebot = {
+    enable = true;
+    environmentFile = "/etc/nixos/R4DroneBot/env";
   };
 
   # Enable sound with pipewire.
@@ -115,11 +132,17 @@
   # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
+  users.mutableUsers = false;
   users.users.r4 = {
     isNormalUser = true;
     description = "Adam Y. Cole II";
-    extraGroups = [ "networkmanager" "wheel" "dialout" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "dialout"
+    ];
     shell = pkgs.zsh;
+    hashedPassword = "$6$oTS9nq.fT8HKHVnT$9vMNuc4H07jL4Rp0yx3zXcODudx5.HTSHpJ0dOPP.hvPvtNEV2bK3G1O4lz870vf5LCNNjVa6MO2bvwpOS5oV.";
   };
 
   programs.zsh.enable = true;
@@ -128,7 +151,10 @@
   nixpkgs.config.allowUnfree = true;
 
   # Enable Flakes and the new command-line tool
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   # Optimize storage: deduplicate files in /nix/store
   nix.settings.auto-optimise-store = true;
@@ -156,7 +182,15 @@
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     git
-    nixfmt-rfc-style
+    nixfmt
+  ];
+
+  environment.gnome.excludePackages = with pkgs; [
+    gnome-tour
+    gnome-music
+    epiphany
+    geary
+    totem
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

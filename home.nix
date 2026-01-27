@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
 {
+  imports = [ ./dconf.nix ];
+
   home.username = "r4";
   home.homeDirectory = "/home/r4";
 
@@ -9,7 +11,6 @@
   home.packages = with pkgs; [
     vscode-fhs
     google-chrome
-    gemini-cli-bin
     wget
     curl
     fd
@@ -23,16 +24,39 @@
     godot
     gimp
     antigravity
-    claude-code
-    jan
-    flutter
-    nodejs
-    pnpm
     devenv
     comma
+    android-studio
+    stella
+    blender
+    audacity
+    vlc
   ];
 
+  xdg = {
+    enable = true;
+    userDirs = {
+      enable = true;
+      createDirectories = true;
+    };
+  };
+
   programs = {
+    gemini-cli = {
+      enable = true;
+    };
+    gnome-shell = {
+      enable = true;
+      extensions = [
+        { package = pkgs.gnomeExtensions.blur-my-shell; }
+        { package = pkgs.gnomeExtensions.gsconnect; }
+        { package = pkgs.gnomeExtensions.vitals; }
+      ];
+    };
+    claude-code = {
+      enable = true;
+      enableMcpIntegration = true;
+    };
     starship.enable = true;
     direnv = {
       enable = true;
@@ -62,14 +86,14 @@
       ];
 
       # 2. Your Lua Config (exact same logic, just stripped of Lazy.nvim boilerplate)
-      extraLuaConfig = ''
+      initLua = ''
         require("mini.basics").setup()
         require("mini.statusline").setup()
         require("mini.completion").setup()
-	require("mini.comment").setup()
-	require("mini.surround").setup()
-	require("mini.git").setup()
-	require("mini.tabline").setup()
+        require("mini.comment").setup()
+        require("mini.surround").setup()
+        require("mini.git").setup()
+        require("mini.tabline").setup()
         require("mini.pairs").setup()
         require("mini.files").setup()
         require("mini.pick").setup()
@@ -84,17 +108,17 @@
     eza.enable = true;
     bat.enable = true;
     gh = {
-	enable = true;
-	gitCredentialHelper.enable = true;
+      enable = true;
+      gitCredentialHelper.enable = true;
     };
     git = {
       enable = true;
       lfs.enable = true;
       settings = {
-		      safe.directory = "/etc/nixos";
-		      user.name = "Adam Y. Cole II";
-		      user.email = "afewburritos@gmail.com";
-	      };
+        safe.directory = "/etc/nixos";
+        user.name = "Adam Y. Cole II";
+        user.email = "afewburritos@gmail.com";
+      };
     };
   };
 
@@ -114,8 +138,7 @@
       Restart = "always";
     };
     Install.WantedBy = [ "default.target" ];
-  };                                                                                                              
-       
+  };
 
   programs.home-manager.enable = true;
 }
